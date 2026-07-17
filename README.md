@@ -108,16 +108,33 @@ src/app/
 ├── core/                 # singletons: HTTP services, interceptors, shared models
 │   ├── interceptors/     # auth.interceptor.ts (attaches JWT), error.interceptor.ts (401/HTTP error handling)
 │   ├── models/
-│   └── services/
+│   └── services/         # language.service.ts (i18n + RTL), product.service.ts
+├── shared/
+│   └── components/
+│       └── app-header/   # logo + brand name + language switcher
 ├── features/
 │   └── products/         # sample feature: lazy-loaded via loadChildren, one standalone component
-├── app.config.ts         # provideHttpClient, provideRouter, interceptor registration
+├── app.config.ts         # provideHttpClient, provideRouter, provideTranslateService, interceptor registration
 └── app.routes.ts         # top-level route table
 ```
 
 Add a new feature by creating `src/app/features/<feature>/` with its own `*.routes.ts` (lazy-loaded via `loadChildren`/`loadComponent`) and registering it in `app.routes.ts`. Services talk to the API through `HttpClient` and return Observables — consume them in templates with the `async` pipe (see `ProductListComponent`) rather than manual `subscribe()`.
 
 The API base URL is set per environment in `src/environments/environment.ts` (dev) and `environment.production.ts` (prod build).
+
+### Branding
+
+- **Name**: "BaseTemplate" — set in `src/index.html` (`<title>`), `package.json`, and `assets/i18n/*.json` (`APP.NAME`). Find-and-replace it project-wide when you fork this template.
+- **Logo**: `src/assets/logo.svg` — a simple indigo/amber monogram, referenced from `AppHeaderComponent`. Swap the file for your own artwork; the header just points at the same path.
+- **Colors**: defined once as CSS custom properties at the top of `src/styles.scss` (`--color-primary` #4F46E5 indigo, `--color-secondary` #F59E0B amber, plus text/background tokens). Change the values there and the whole app re-themes — nothing else references raw hex codes.
+
+### Internationalization (English / Arabic)
+
+Built with [`@ngx-translate/core`](https://github.com/ngx-translate/core). Translation files live in `src/assets/i18n/en.json` and `ar.json`; add a key there and reference it in a template with the `translate` pipe (`{{ 'PRODUCTS.TITLE' | translate }}`, see `ProductListComponent`).
+
+`LanguageService` (`core/services/language.service.ts`) owns the active language: it persists the choice to `localStorage`, and sets `<html lang>`/`<html dir>` so Arabic renders right-to-left automatically via native CSS direction — no separate RTL build. `AppHeaderComponent` has an EN/AR switcher wired to it; call `languageService.use('ar' | 'en')` from anywhere else you need to change language programmatically.
+
+To add a third language: create `src/assets/i18n/<code>.json`, add `<code>` to `SUPPORTED_LANGUAGES` in `language.service.ts` (and to `RTL_LANGUAGES` too, if it's right-to-left), and add a button to `AppHeaderComponent`.
 
 ## Docker (local SQL Server + API)
 

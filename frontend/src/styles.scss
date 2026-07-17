@@ -1,3 +1,19 @@
+/* Brand design tokens — swap these to re-theme the whole app. */
+:root {
+  --color-primary: #4f46e5; /* indigo */
+  --color-primary-dark: #4338ca;
+  --color-primary-contrast: #ffffff;
+
+  --color-secondary: #f59e0b; /* amber */
+  --color-secondary-contrast: #1f2937;
+
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f9fafb;
+  --color-border: #e5e7eb;
+}
+
 /* Global styles */
 html,
 body {
@@ -7,4 +23,11 @@ body {
 
 body {
   font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+/* Angular sets [dir] on <html> at runtime based on the active language (see LanguageService). */
+html[dir='rtl'] {
+  text-align: right;
 }

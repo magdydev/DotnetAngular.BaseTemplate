@@ -1,5 +1,6 @@
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { Product } from '../../../core/models/product.model';
 import { ProductService } from '../../../core/services/product.service';
@@ -12,7 +13,7 @@ import { ProductService } from '../../../core/services/product.service';
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [AsyncPipe, CurrencyPipe],
+  imports: [AsyncPipe, CurrencyPipe, TranslatePipe],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss',
 })

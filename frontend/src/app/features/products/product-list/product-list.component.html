@@ -1,5 +1,5 @@
 <section class="product-list">
-  <h1>Products</h1>
+  <h1>{{ 'PRODUCTS.TITLE' | translate }}</h1>
 
   @if (products$ | async; as products) {
     @if (products.length > 0) {
@@ -13,9 +13,9 @@
         }
       </ul>
     } @else {
-      <p>No products yet.</p>
+      <p>{{ 'PRODUCTS.EMPTY' | translate }}</p>
     }
   } @else {
-    <p>Loading products…</p>
+    <p>{{ 'PRODUCTS.LOADING' | translate }}</p>
   }
 </section>

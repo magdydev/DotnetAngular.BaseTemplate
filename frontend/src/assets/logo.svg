@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="logoTitle">
+  <title id="logoTitle">BaseTemplate logo</title>
+  <rect x="1" y="1" width="62" height="62" rx="14" fill="#4F46E5" />
+  <circle cx="50" cy="14" r="6" fill="#F59E0B" />
+  <text
+    x="32"
+    y="34"
+    text-anchor="middle"
+    dominant-baseline="central"
+    font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    font-size="30"
+    font-weight="700"
+    fill="#FFFFFF"
+  >B</text>
+</svg>
