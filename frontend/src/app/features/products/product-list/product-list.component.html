@@ -1,0 +1,21 @@
+<section class="product-list">
+  <h1>Products</h1>
+
+  @if (products$ | async; as products) {
+    @if (products.length > 0) {
+      <ul>
+        @for (product of products; track product.id) {
+          <li>
+            <span class="name">{{ product.name }}</span>
+            <span class="sku">{{ product.sku }}</span>
+            <span class="price">{{ product.price | currency: product.currency }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p>No products yet.</p>
+    }
+  } @else {
+    <p>Loading products…</p>
+  }
+</section>

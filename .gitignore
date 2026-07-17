@@ -1,0 +1,77 @@
+### .NET ###
+bin/
+obj/
+out/
+publish/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.dbmdl
+*.dbproj.schemaview
+*.pfx
+*.publishsettings
+node_modules/
+*.log
+logs/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.DotSettings.user
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# EF Core
+*.mdf
+*.ldf
+*.ndf
+
+### Angular / Node ###
+frontend/dist/
+frontend/.angular/
+frontend/node_modules/
+frontend/coverage/
+frontend/tmp/
+frontend/.sass-cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+### Docker ###
+docker-compose.override.yml
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Secrets ###
+*.env
+.env.local
+secrets.json

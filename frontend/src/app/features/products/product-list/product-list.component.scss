@@ -1,0 +1,24 @@
+.product-list {
+  padding: 1.5rem;
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .name {
+    flex: 1;
+    font-weight: 600;
+  }
+
+  .sku {
+    color: #666;
+  }
+}
