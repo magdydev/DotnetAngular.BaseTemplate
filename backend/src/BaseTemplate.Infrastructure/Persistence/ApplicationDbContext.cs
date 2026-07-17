@@ -11,6 +11,8 @@ public class ApplicationDbContext(
 {
     public DbSet<Product> Products => Set<Product>();
 
+    public DbSet<BrandingSettings> BrandingSettings => Set<BrandingSettings>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

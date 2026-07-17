@@ -135,12 +135,14 @@ Add a new feature by creating `src/app/features/<feature>/` with its own `*.rout
 
 The API base URL is set per environment in `src/environments/environment.ts` (dev) and `environment.production.ts` (prod build).
 
-### Branding
+### Branding (name / logo / colors — database-backed)
 
-- **Name**: "BaseTemplate" — set in `src/index.html` (`<title>`), `package.json`, and `assets/i18n/*.json` (`APP.NAME`). Handled automatically by `scripts/New-ProjectFromTemplate.ps1` (see above) when you fork this template.
-- **Logo**: `src/assets/logo.svg` — a simple indigo/amber monogram, referenced from `AppHeaderComponent`. Swap the file for your own artwork; the header just points at the same path.
-- **Colors**: defined once as CSS custom properties at the top of `src/styles.scss` (`--color-primary` #4F46E5 indigo, `--color-secondary` #F59E0B amber, plus text/background tokens). Change the values there and the whole app re-themes — nothing else references raw hex codes.
-- **"Powered by" footer**: `AppFooterComponent` shows `src/assets/magdytech-logo.png` with a `FOOTER.POWERED_BY` translated caption. This is agency attribution, kept separate from the project's own name/logo/colors above — the rename script skips it deliberately.
+Name, logo URL, and primary/secondary colors are **not** build-time constants — they're a row in the database, served by `BrandingController` (`GET /api/v1/branding`, `PUT /api/v1/branding`, auth-protected) and read by the `BrandingSettings` aggregate (`BaseTemplate.Domain/Entities/BrandingSettings.cs`).
+
+- **Backend**: `BrandingSettings` is seeded once at startup (`ApplicationDbContextSeed`) with the defaults in `BrandingDefaults` (`BaseTemplate.Domain/Entities/BrandingDefaults.cs`). Update it through the API (`PUT /api/v1/branding` with `{ appName, logoUrl, primaryColor, secondaryColor }`) — colors must be valid hex (`#RRGGBB` or `#RGB`), enforced both by `BrandingSettings.Update` (domain invariant) and `UpdateBrandingSettingsCommandValidator` (early rejection).
+- **Frontend**: `BrandingService` (`core/services/branding.service.ts`) fetches `/api/v1/branding` once at startup via an `APP_INITIALIZER` in `app.config.ts`, then sets `document.title` and the `--color-primary`/`--color-secondary` CSS custom properties on `<html>` — the rest of the app just uses those variables (see `styles.scss`), so nothing else needs to know branding is dynamic. If the API is unreachable, it falls back to the same defaults as the backend seed rather than blocking startup.
+- `AppHeaderComponent` renders `brandingService.branding().appName` / `.logoUrl` directly — no static logo file or i18n key involved anymore.
+- **"Powered by" footer**: `AppFooterComponent` shows `src/assets/magdytech-logo.png` with a `FOOTER.POWERED_BY` translated caption. This is agency attribution, entirely separate from the database-backed branding above — it's a static asset, not a setting, and the rename script skips it deliberately.
 
 ### Internationalization (English / Arabic)
 
@@ -160,4 +162,4 @@ This starts SQL Server on `localhost:1433` and the API on `localhost:5100`. Run 
 
 ## What's intentionally left out
 
-This template ships one sample entity (`Product`) and stops there — no CRUD for a second entity, no built-in login screen, no dashboard pages. Copy the `Product` slice (Domain entity → EF configuration → repository → Application command/query → controller → Angular feature) for every new aggregate you add.
+This template ships two sample aggregates and stops there — no built-in login screen, no dashboard pages. `Product` demonstrates the standard multi-row entity pattern; `BrandingSettings` demonstrates a single-row "settings" aggregate (see the Branding section above). Copy whichever slice (Domain entity → EF configuration → repository → Application command/query → controller → Angular feature) fits the new aggregate you're adding.

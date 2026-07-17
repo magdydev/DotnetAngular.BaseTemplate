@@ -8,5 +8,7 @@ public interface IUnitOfWork
 {
     IProductRepository Products { get; }
 
+    IBrandingSettingsRepository BrandingSettings { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

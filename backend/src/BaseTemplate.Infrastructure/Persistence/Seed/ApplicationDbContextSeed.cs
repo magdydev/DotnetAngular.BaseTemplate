@@ -30,6 +30,19 @@ public static class ApplicationDbContextSeed
                 await context.SaveChangesAsync();
                 product.ClearDomainEvents();
             }
+
+            if (!await context.BrandingSettings.AnyAsync())
+            {
+                var branding = BrandingSettings.CreateDefault(
+                    appName: BrandingDefaults.AppName,
+                    logoUrl: BrandingDefaults.LogoUrl,
+                    primaryColor: BrandingDefaults.PrimaryColor,
+                    secondaryColor: BrandingDefaults.SecondaryColor);
+
+                await context.BrandingSettings.AddAsync(branding);
+                await context.SaveChangesAsync();
+                branding.ClearDomainEvents();
+            }
         }
         catch (Exception ex)
         {
