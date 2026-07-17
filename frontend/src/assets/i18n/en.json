@@ -14,5 +14,8 @@
     "SWITCH": "Language",
     "EN": "English",
     "AR": "Arabic"
+  },
+  "FOOTER": {
+    "POWERED_BY": "Powered by"
   }
 }

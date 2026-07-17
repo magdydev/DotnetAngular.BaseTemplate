@@ -4,6 +4,17 @@ A reusable, production-ready base template for full-stack applications: a **.NET
 
 This is a *starting point*, not a finished app. It ships with one sample aggregate (`Product`) that demonstrates every layer and pattern end to end — copy that pattern for each new feature.
 
+## Starting a new project from this template
+
+Don't hand-edit every "BaseTemplate" reference. Run the PowerShell script instead:
+
+```bash
+pwsh ./scripts/New-ProjectFromTemplate.ps1 -NewName Acme          # rename everything to Acme.*
+pwsh ./scripts/New-ProjectFromTemplate.ps1 -NewName Acme -WhatIf  # preview first, changes nothing
+```
+
+It renames every `BaseTemplate` / `basetemplate` / `base-template` occurrence — namespaces, `.csproj`/`.sln` files and folders, the Angular package name, `appsettings.json`, `docker-compose.yml`, i18n strings — and regenerates the API project's `UserSecretsId` so it doesn't collide with the template's. It does **not** touch the "Powered by MagdyTech Solutions" footer; that attribution is fixed on purpose. See the script's own comment-based help (`Get-Help ./scripts/New-ProjectFromTemplate.ps1 -Full`) for details.
+
 ## Solution layout
 
 ```
@@ -20,6 +31,8 @@ DotnetAngular.BaseTemplate/
 │   └── tests/
 │       └── BaseTemplate.Tests/          # xUnit tests for Domain and Application
 ├── frontend/                        # Angular app (standalone components, lazy-loaded features)
+├── scripts/
+│   └── New-ProjectFromTemplate.ps1  # rebrands backend + frontend for a new project (see above)
 ├── docker-compose.yml                # SQL Server + API for local development
 └── README.md
 ```
@@ -124,9 +137,10 @@ The API base URL is set per environment in `src/environments/environment.ts` (de
 
 ### Branding
 
-- **Name**: "BaseTemplate" — set in `src/index.html` (`<title>`), `package.json`, and `assets/i18n/*.json` (`APP.NAME`). Find-and-replace it project-wide when you fork this template.
+- **Name**: "BaseTemplate" — set in `src/index.html` (`<title>`), `package.json`, and `assets/i18n/*.json` (`APP.NAME`). Handled automatically by `scripts/New-ProjectFromTemplate.ps1` (see above) when you fork this template.
 - **Logo**: `src/assets/logo.svg` — a simple indigo/amber monogram, referenced from `AppHeaderComponent`. Swap the file for your own artwork; the header just points at the same path.
 - **Colors**: defined once as CSS custom properties at the top of `src/styles.scss` (`--color-primary` #4F46E5 indigo, `--color-secondary` #F59E0B amber, plus text/background tokens). Change the values there and the whole app re-themes — nothing else references raw hex codes.
+- **"Powered by" footer**: `AppFooterComponent` shows `src/assets/magdytech-logo.png` with a `FOOTER.POWERED_BY` translated caption. This is agency attribution, kept separate from the project's own name/logo/colors above — the rename script skips it deliberately.
 
 ### Internationalization (English / Arabic)
 
