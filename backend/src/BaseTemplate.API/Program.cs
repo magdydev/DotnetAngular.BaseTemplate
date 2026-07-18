@@ -43,9 +43,10 @@ if (app.Environment.IsDevelopment())
     });
 
     using var scope = app.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    await ApplicationDbContextSeed.SeedAsync(context, logger);
+    var serviceProvider = scope.ServiceProvider;
+    var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+    var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+    await ApplicationDbContextSeed.SeedAsync(context, serviceProvider, logger);
 }
 
 app.UseSerilogRequestLogging();

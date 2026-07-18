@@ -2,40 +2,148 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.5rem;
+  padding: var(--space-3) var(--space-6);
   background: var(--color-primary);
   color: var(--color-primary-contrast);
+  box-shadow: 0 1px 0 oklch(0% 0 0 / 12%), var(--shadow-md);
+  position: relative;
+  z-index: 10;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-3);
+  cursor: pointer;
+  transition: opacity var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  img {
+    border-radius: var(--radius-sm);
+    box-shadow: 0 1px 4px oklch(0% 0 0 / 20%);
+  }
 
   .brand-name {
-    font-weight: 700;
-    font-size: 1.125rem;
+    font-family: var(--font-heading);
+    font-weight: var(--weight-black);
+    font-size: var(--text-lg);
+    letter-spacing: -0.02em;
   }
 }
 
-.language-switcher {
+.header-actions {
   display: flex;
-  gap: 0.25rem;
+  align-items: center;
+  gap: var(--space-2);
+}
 
-  button {
-    border: 1px solid rgb(255 255 255 / 40%);
-    background: transparent;
-    color: inherit;
-    padding: 0.25rem 0.6rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
+.header-action-btn {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid oklch(100% 0 0 / 30%);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 
-    &.active {
-      background: var(--color-secondary);
-      border-color: var(--color-secondary);
-      color: var(--color-secondary-contrast);
-      font-weight: 600;
+  &:hover {
+    background: oklch(100% 0 0 / 15%);
+    border-color: oklch(100% 0 0 / 70%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px oklch(0% 0 0 / 20%);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-contrast);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  &--logout {
+    border-color: var(--color-error);
+    background: var(--color-error);
+
+    &:hover {
+      background: color-mix(in oklch, var(--color-error), oklch(0% 0 0 / 25%));
+      border-color: color-mix(in oklch, var(--color-error), oklch(0% 0 0 / 25%));
     }
+
+    &:active {
+      background: color-mix(in oklch, var(--color-error), oklch(0% 0 0 / 40%));
+    }
+  }
+}
+
+.lang-toggle {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  min-inline-size: 44px;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid oklch(100% 0 0 / 30%);
+  border-radius: var(--radius-md);
+  background: oklch(100% 0 0 / 8%);
+  color: inherit;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: oklch(100% 0 0 / 20%);
+    border-color: oklch(100% 0 0 / 70%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px oklch(0% 0 0 / 20%);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-contrast);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (width <= 768px) {
+  .app-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .brand-name {
+    font-size: var(--text-base);
+  }
+}
+
+@media (width <= 640px) {
+  .header-action-btn,
+  .lang-toggle {
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .lang-toggle {
+    min-inline-size: 36px;
   }
 }

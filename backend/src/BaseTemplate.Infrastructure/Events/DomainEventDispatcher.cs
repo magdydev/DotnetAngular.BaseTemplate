@@ -8,6 +8,8 @@ public sealed class DomainEventDispatcher(IServiceProvider serviceProvider) : ID
 {
     public async Task DispatchAndClearEvents(IEnumerable<BaseEntity> entitiesWithEvents, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entitiesWithEvents);
+
         var entities = entitiesWithEvents.ToList();
         var events = entities.SelectMany(e => e.DomainEvents).ToList();
 

@@ -41,7 +41,7 @@ public class UpdateBrandingSettingsCommandHandlerTests
         _brandingSettingsRepository.Setup(r => r.GetCurrentAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync((BrandingSettings?)null);
 
-        var command = new UpdateBrandingSettingsCommand("Acme", "assets/logo.svg", "#4F46E5", "#F59E0B");
+        var command = new UpdateBrandingSettingsCommand("Acme", "أكمة", "assets/logo.svg", null, "#4F46E5", "#F59E0B");
 
         var result = await _handler.Handle(command, CancellationToken.None);
 
@@ -56,12 +56,12 @@ public class UpdateBrandingSettingsCommandHandlerTests
     [Fact]
     public async Task Handle_WhenSettingsExist_UpdatesExistingRow()
     {
-        var existing = BrandingSettings.CreateDefault("BaseTemplate", "assets/logo.svg", "#4F46E5", "#F59E0B");
+        var existing = BrandingSettings.CreateDefault("BaseTemplate", "قاعدة", "assets/logo.svg", null, "#4F46E5", "#F59E0B");
         existing.ClearDomainEvents();
         _brandingSettingsRepository.Setup(r => r.GetCurrentAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(existing);
 
-        var command = new UpdateBrandingSettingsCommand("Acme", "assets/new-logo.svg", "#000000", "#FFFFFF");
+        var command = new UpdateBrandingSettingsCommand("Acme", "أكمة", "assets/new-logo.svg", null, "#000000", "#FFFFFF");
 
         var result = await _handler.Handle(command, CancellationToken.None);
 

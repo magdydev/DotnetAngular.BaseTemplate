@@ -1,11 +1,7 @@
 {
   "NAV": {
-    "PRODUCTS": "Products"
-  },
-  "PRODUCTS": {
-    "TITLE": "Products",
-    "LOADING": "Loading products…",
-    "EMPTY": "No products yet."
+    "SECTION": "Navigation",
+    "SETTINGS": "Settings"
   },
   "LANGUAGE": {
     "SWITCH": "Language",
@@ -13,6 +9,35 @@
     "AR": "Arabic"
   },
   "FOOTER": {
-    "POWERED_BY": "Powered by"
+    "COPYRIGHT": "© MagdyTech Solutions"
+  },
+  "AUTH": {
+    "LOGIN": "Sign in",
+    "LOGOUT": "Sign out",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "SIGN_IN": "Sign in",
+    "INVALID_CREDENTIALS": "Invalid username or password."
+  },
+  "TOAST": {
+    "SIGNED_IN": "Signed in successfully.",
+    "SIGNED_OUT": "You have been signed out.",
+    "INVALID_CREDENTIALS": "Invalid username or password.",
+    "SETTINGS_SAVED": "Settings saved successfully.",
+    "SETTINGS_SAVE_ERROR": "Failed to save settings."
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "APP_NAME": "App Name",
+    "APP_NAME_EN": "English Name",
+    "APP_NAME_AR": "Arabic Name",
+    "LOGO": "Logo",
+    "UPLOAD": "Upload logo",
+    "CHANGE": "Change logo",
+    "REMOVE": "Remove",
+    "COLORS": "Colors",
+    "PRIMARY_COLOR": "Primary Color",
+    "SECONDARY_COLOR": "Secondary Color",
+    "SAVE": "Save Changes"
   }
 }

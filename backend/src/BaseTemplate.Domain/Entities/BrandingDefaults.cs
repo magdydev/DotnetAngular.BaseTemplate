@@ -7,6 +7,7 @@ namespace BaseTemplate.Domain.Entities;
 public static class BrandingDefaults
 {
     public const string AppName = "BaseTemplate";
+    public const string AppNameAr = "النموذج الأساسي";
     public const string LogoUrl = "assets/logo.svg";
     public const string PrimaryColor = "#4F46E5";
     public const string SecondaryColor = "#F59E0B";

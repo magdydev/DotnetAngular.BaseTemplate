@@ -1,0 +1,120 @@
+<div class="settings-page">
+  <h1 class="settings__title">{{ 'SETTINGS.TITLE' | translate }}</h1>
+
+  <form class="settings-form" (ngSubmit)="save()" #settingsForm="ngForm">
+    <div class="settings-card">
+      <div class="settings-section-header">
+        <h2 class="settings-section-title">{{ 'SETTINGS.APP_NAME' | translate }}</h2>
+      </div>
+
+      <div class="settings-row">
+        <label class="settings-field">
+          <span class="settings-label">{{ 'SETTINGS.APP_NAME_EN' | translate }}</span>
+          <input
+            type="text"
+            class="settings-input"
+            [ngModel]="appName()"
+            (ngModelChange)="appName.set($event)"
+            name="appName"
+            required
+            autofocus
+            placeholder="BaseTemplate"
+          />
+        </label>
+
+        <label class="settings-field">
+          <span class="settings-label">{{ 'SETTINGS.APP_NAME_AR' | translate }}</span>
+          <input
+            type="text"
+            class="settings-input"
+            [ngModel]="appNameAr()"
+            (ngModelChange)="appNameAr.set($event)"
+            name="appNameAr"
+            required
+            dir="rtl"
+            placeholder="النموذج الأساسي"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-cols-row">
+      <div class="settings-card">
+        <div class="settings-section-header">
+          <h2 class="settings-section-title">{{ 'SETTINGS.LOGO' | translate }}</h2>
+        </div>
+
+        <div class="settings-logo-row">
+          <label class="settings-upload-zone" [class.has-logo]="!!logoPreview()">
+            @if (logoPreview(); as preview) {
+              <img [src]="preview" alt="Logo preview" class="settings-upload-preview" />
+              <div class="settings-upload-overlay">
+                <span>{{ 'SETTINGS.CHANGE' | translate }}</span>
+              </div>
+            } @else {
+              <svg class="settings-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              <span class="settings-upload-text">{{ 'SETTINGS.UPLOAD' | translate }}</span>
+            }
+            <input
+              type="file"
+              accept="image/*"
+              class="settings-file-input"
+              (change)="onFileSelected($event)"
+            />
+          </label>
+          @if (logoPreview()) {
+            <button type="button" class="settings-remove-btn" (click)="removeLogo()">
+              {{ 'SETTINGS.REMOVE' | translate }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-section-header">
+          <h2 class="settings-section-title">{{ 'SETTINGS.COLORS' | translate }}</h2>
+        </div>
+
+        <div class="settings-row">
+          <label class="settings-field settings-field--color">
+            <span class="settings-label">{{ 'SETTINGS.PRIMARY_COLOR' | translate }}</span>
+            <div class="settings-color-group">
+              <input
+                type="color"
+                class="settings-color-picker"
+                [ngModel]="primaryColor()"
+                (ngModelChange)="primaryColor.set($event)"
+                name="primaryColor"
+              />
+              <span class="settings-color-hex">{{ primaryColor() }}</span>
+            </div>
+          </label>
+
+          <label class="settings-field settings-field--color">
+            <span class="settings-label">{{ 'SETTINGS.SECONDARY_COLOR' | translate }}</span>
+            <div class="settings-color-group">
+              <input
+                type="color"
+                class="settings-color-picker"
+                [ngModel]="secondaryColor()"
+                (ngModelChange)="secondaryColor.set($event)"
+                name="secondaryColor"
+              />
+              <span class="settings-color-hex">{{ secondaryColor() }}</span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-submit-row">
+      <button type="submit" class="settings-submit" [disabled]="saving() || !appName()">
+        {{ 'SETTINGS.SAVE' | translate }}
+      </button>
+    </div>
+  </form>
+</div>

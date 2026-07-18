@@ -1,6 +1,7 @@
 using BaseTemplate.Domain.Entities;
-using BaseTemplate.Domain.ValueObjects;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace BaseTemplate.Infrastructure.Persistence.Seed;
@@ -12,36 +13,72 @@ namespace BaseTemplate.Infrastructure.Persistence.Seed;
 /// </summary>
 public static class ApplicationDbContextSeed
 {
-    public static async Task SeedAsync(ApplicationDbContext context, ILogger logger)
+    public static async Task SeedAsync(ApplicationDbContext context, IServiceProvider serviceProvider, ILogger logger)
     {
         try
         {
             await context.Database.MigrateAsync();
 
-            if (!await context.Products.AnyAsync())
+            var branding = await context.BrandingSettings.FirstOrDefaultAsync();
+            if (branding is null)
             {
-                var product = Product.Create(
-                    name: "Sample Product",
-                    sku: "SAMPLE-001",
-                    price: Money.Create(9.99m, "USD"),
-                    description: "Seed data demonstrating the Product aggregate. Safe to delete.");
-
-                await context.Products.AddAsync(product);
-                await context.SaveChangesAsync();
-                product.ClearDomainEvents();
-            }
-
-            if (!await context.BrandingSettings.AnyAsync())
-            {
-                var branding = BrandingSettings.CreateDefault(
+                branding = BrandingSettings.CreateDefault(
                     appName: BrandingDefaults.AppName,
+                    appNameAr: BrandingDefaults.AppNameAr,
                     logoUrl: BrandingDefaults.LogoUrl,
+                    logoData: null,
                     primaryColor: BrandingDefaults.PrimaryColor,
                     secondaryColor: BrandingDefaults.SecondaryColor);
 
                 await context.BrandingSettings.AddAsync(branding);
                 await context.SaveChangesAsync();
                 branding.ClearDomainEvents();
+                logger.LogInformation("Branding settings seeded with defaults");
+            }
+            else if (branding.AppName != BrandingDefaults.AppName || branding.AppNameAr != BrandingDefaults.AppNameAr)
+            {
+                branding.Update(
+                    BrandingDefaults.AppName,
+                    BrandingDefaults.AppNameAr,
+                    BrandingDefaults.LogoUrl,
+                    null,
+                    BrandingDefaults.PrimaryColor,
+                    BrandingDefaults.SecondaryColor);
+
+                await context.SaveChangesAsync();
+                branding.ClearDomainEvents();
+                logger.LogInformation("Branding settings reset to defaults (was '{OldName}')", branding.AppName);
+            }
+
+            var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+            if (!await roleManager.RoleExistsAsync("Admin"))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>("Admin"));
+                logger.LogInformation("Admin role created");
+            }
+
+            if (await userManager.FindByNameAsync("admin") is null)
+            {
+                var admin = new AppUser
+                {
+                    UserName = "admin",
+                    Email = "admin@example.com",
+                    EmailConfirmed = true,
+                };
+
+                var result = await userManager.CreateAsync(admin, "Admin@123");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                    logger.LogInformation("Admin user created with default password");
+                }
+                else
+                {
+                    logger.LogWarning("Failed to create admin user: {Errors}",
+                        string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
             }
         }
         catch (Exception ex)

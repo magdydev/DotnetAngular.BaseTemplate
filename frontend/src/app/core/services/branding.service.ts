@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { BrandingSettings } from '../models/branding.model';
 
 const DEFAULT_BRANDING: BrandingSettings = {
   appName: 'BaseTemplate',
+  appNameAr: 'النموذج الأساسي',
   logoUrl: 'assets/logo.svg',
+  logoData: null,
   primaryColor: '#4F46E5',
   secondaryColor: '#F59E0B',
 };
@@ -22,15 +23,22 @@ const DEFAULT_BRANDING: BrandingSettings = {
 @Injectable({ providedIn: 'root' })
 export class BrandingService {
   private readonly http = inject(HttpClient);
-  private readonly titleService = inject(Title);
 
   private readonly _branding = signal<BrandingSettings>(DEFAULT_BRANDING);
   readonly branding = this._branding.asReadonly();
 
+  async update(settings: BrandingSettings): Promise<void> {
+    const updated = await firstValueFrom(
+      this.http.put<BrandingSettings>(`${environment.apiBaseUrl}/v1/settings/branding`, settings),
+    );
+    this._branding.set(updated);
+    this.applyToDocument();
+  }
+
   async load(): Promise<void> {
     try {
       const settings = await firstValueFrom(
-        this.http.get<BrandingSettings>(`${environment.apiBaseUrl}/v1/branding`),
+        this.http.get<BrandingSettings>(`${environment.apiBaseUrl}/v1/settings/branding`),
       );
       this._branding.set(settings);
     } catch {
@@ -42,10 +50,10 @@ export class BrandingService {
 
   private applyToDocument(): void {
     const branding = this._branding();
-    this.titleService.setTitle(branding.appName);
 
     const root = document.documentElement.style;
     root.setProperty('--color-primary', branding.primaryColor);
     root.setProperty('--color-secondary', branding.secondaryColor);
+    root.setProperty('--color-hover', branding.secondaryColor);
   }
 }

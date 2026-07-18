@@ -12,7 +12,7 @@ public class UpdateBrandingSettingsCommandValidatorTests
     [Fact]
     public void Validate_WithValidCommand_HasNoErrors()
     {
-        var command = new UpdateBrandingSettingsCommand("Acme", "assets/logo.svg", "#4F46E5", "#F59E0B");
+        var command = new UpdateBrandingSettingsCommand("Acme", "أكمة", "assets/logo.svg", null, "#4F46E5", "#F59E0B");
 
         var result = _validator.TestValidate(command);
 
@@ -25,7 +25,7 @@ public class UpdateBrandingSettingsCommandValidatorTests
     [InlineData("Acme", "#4F46E5", "not-a-color")]
     public void Validate_WithInvalidCommand_HasErrors(string appName, string primaryColor, string secondaryColor)
     {
-        var command = new UpdateBrandingSettingsCommand(appName, null, primaryColor, secondaryColor);
+        var command = new UpdateBrandingSettingsCommand(appName, "أكمة", null, null, primaryColor, secondaryColor);
 
         var result = _validator.TestValidate(command);
 

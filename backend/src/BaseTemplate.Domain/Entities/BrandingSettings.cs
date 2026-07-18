@@ -14,7 +14,11 @@ public sealed partial class BrandingSettings : BaseEntity, IAggregateRoot
 {
     public string AppName { get; private set; } = null!;
 
+    public string AppNameAr { get; private set; } = null!;
+
     public string? LogoUrl { get; private set; }
+
+    public string? LogoData { get; private set; }
 
     public string PrimaryColor { get; private set; } = null!;
 
@@ -25,18 +29,23 @@ public sealed partial class BrandingSettings : BaseEntity, IAggregateRoot
         // Required by EF Core.
     }
 
-    public static BrandingSettings CreateDefault(string appName, string? logoUrl, string primaryColor, string secondaryColor)
+    public static BrandingSettings CreateDefault(string appName, string appNameAr, string? logoUrl, string? logoData, string primaryColor, string secondaryColor)
     {
         var settings = new BrandingSettings();
-        settings.Update(appName, logoUrl, primaryColor, secondaryColor);
+        settings.Update(appName, appNameAr, logoUrl, logoData, primaryColor, secondaryColor);
         return settings;
     }
 
-    public void Update(string appName, string? logoUrl, string primaryColor, string secondaryColor)
+    public void Update(string appName, string appNameAr, string? logoUrl, string? logoData, string primaryColor, string secondaryColor)
     {
         if (string.IsNullOrWhiteSpace(appName))
         {
             throw new DomainException("Application name is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(appNameAr))
+        {
+            throw new DomainException("Arabic application name is required.");
         }
 
         if (!IsValidHexColor(primaryColor))
@@ -50,10 +59,13 @@ public sealed partial class BrandingSettings : BaseEntity, IAggregateRoot
         }
 
         var trimmedLogoUrl = string.IsNullOrWhiteSpace(logoUrl) ? null : logoUrl.Trim();
-        var changed = AppName != appName || LogoUrl != trimmedLogoUrl || PrimaryColor != primaryColor || SecondaryColor != secondaryColor;
+        var trimmedLogoData = string.IsNullOrWhiteSpace(logoData) ? null : logoData.Trim();
+        var changed = AppName != appName || AppNameAr != appNameAr || LogoUrl != trimmedLogoUrl || LogoData != trimmedLogoData || PrimaryColor != primaryColor || SecondaryColor != secondaryColor;
 
         AppName = appName.Trim();
+        AppNameAr = appNameAr.Trim();
         LogoUrl = trimmedLogoUrl;
+        LogoData = trimmedLogoData;
         PrimaryColor = primaryColor.Trim();
         SecondaryColor = secondaryColor.Trim();
 

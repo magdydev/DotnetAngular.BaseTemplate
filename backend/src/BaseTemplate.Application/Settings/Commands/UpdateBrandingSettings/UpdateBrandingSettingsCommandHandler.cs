@@ -20,12 +20,12 @@ public sealed class UpdateBrandingSettingsCommandHandler(
 
         if (settings is null)
         {
-            settings = BrandingSettings.CreateDefault(command.AppName, command.LogoUrl, command.PrimaryColor, command.SecondaryColor);
+            settings = BrandingSettings.CreateDefault(command.AppName, command.AppNameAr, command.LogoUrl, command.LogoData, command.PrimaryColor, command.SecondaryColor);
             await unitOfWork.BrandingSettings.AddAsync(settings, cancellationToken);
         }
         else
         {
-            settings.Update(command.AppName, command.LogoUrl, command.PrimaryColor, command.SecondaryColor);
+            settings.Update(command.AppName, command.AppNameAr, command.LogoUrl, command.LogoData, command.PrimaryColor, command.SecondaryColor);
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -16,8 +16,14 @@ public sealed class BrandingSettingsConfiguration : IEntityTypeConfiguration<Bra
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(b => b.AppNameAr)
+            .IsRequired()
+            .HasMaxLength(200);
+
         builder.Property(b => b.LogoUrl)
             .HasMaxLength(2048);
+
+        builder.Property(b => b.LogoData);
 
         builder.Property(b => b.PrimaryColor)
             .IsRequired()

@@ -12,6 +12,10 @@ public sealed class UpdateBrandingSettingsCommandValidator : AbstractValidator<U
             .NotEmpty()
             .MaximumLength(200);
 
+        RuleFor(x => x.AppNameAr)
+            .NotEmpty()
+            .MaximumLength(200);
+
         RuleFor(x => x.LogoUrl)
             .MaximumLength(2048);
 

@@ -45,7 +45,15 @@ public static class ApiServiceCollectionExtensions
 
     public static IServiceCollection AddJwtAuthenticationScaffolding(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>() ?? new JwtSettings();
+        var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+            ?? throw new InvalidOperationException("JwtSettings section is missing from configuration.");
+
+        if (string.IsNullOrEmpty(jwtSettings.SigningKey))
+        {
+            throw new InvalidOperationException(
+                "JWT SigningKey is not configured. Set it in appsettings.json, User Secrets, or an environment variable.");
+        }
+
         services.AddSingleton(jwtSettings);
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -59,8 +67,7 @@ public static class ApiServiceCollectionExtensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                        string.IsNullOrEmpty(jwtSettings.SigningKey) ? new string('0', 32) : jwtSettings.SigningKey)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SigningKey)),
                     ClockSkew = TimeSpan.FromMinutes(1),
                 };
             });

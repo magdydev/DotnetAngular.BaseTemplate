@@ -1,5 +1,7 @@
 using BaseTemplate.Domain.Entities;
 using BaseTemplate.Infrastructure.Persistence.Interceptors;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaseTemplate.Infrastructure.Persistence;
@@ -7,10 +9,8 @@ namespace BaseTemplate.Infrastructure.Persistence;
 public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options,
     AuditableEntitySaveChangesInterceptor auditInterceptor)
-    : DbContext(options)
+    : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options)
 {
-    public DbSet<Product> Products => Set<Product>();
-
     public DbSet<BrandingSettings> BrandingSettings => Set<BrandingSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

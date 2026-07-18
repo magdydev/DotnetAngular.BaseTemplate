@@ -26,6 +26,9 @@ public sealed class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Ex
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        ArgumentNullException.ThrowIfNull(exception);
+        ArgumentNullException.ThrowIfNull(context);
+
         var (statusCode, title, errors) = exception switch
         {
             ValidationException validationException => (

@@ -6,10 +6,14 @@ import { Routes } from '@angular/router';
  * same way — a routes file per feature under src/app/features.
  */
 export const routes: Routes = [
-  { path: '', redirectTo: 'products', pathMatch: 'full' },
+  { path: '', redirectTo: 'settings', pathMatch: 'full' },
   {
-    path: 'products',
-    loadChildren: () => import('./features/products/products.routes').then((m) => m.PRODUCTS_ROUTES),
+    path: 'login',
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
-  { path: '**', redirectTo: 'products' },
+  {
+    path: 'settings',
+    loadChildren: () => import('./features/settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
+  },
+  { path: '**', redirectTo: 'settings' },
 ];

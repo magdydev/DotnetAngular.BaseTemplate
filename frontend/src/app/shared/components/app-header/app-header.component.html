@@ -1,17 +1,29 @@
 <header class="app-header">
-  <div class="brand">
-    @if (brandingService.branding().logoUrl; as logoUrl) {
-      <img [src]="logoUrl" alt="" width="32" height="32" />
+  <div class="brand" routerLink="/settings">
+    @if (logoSrc(); as src) {
+      <img [src]="src" [alt]="brandingService.branding().appName" width="32" height="32" />
     }
-    <span class="brand-name">{{ brandingService.branding().appName }}</span>
+    <span class="brand-name">{{ languageService.currentLang() === 'ar' ? brandingService.branding().appNameAr : brandingService.branding().appName }}</span>
   </div>
 
-  <div class="language-switcher" role="group" [attr.aria-label]="'LANGUAGE.SWITCH' | translate">
-    <button type="button" [class.active]="languageService.currentLang() === 'en'" (click)="switchTo('en')">
-      EN
+  <div class="header-actions">
+    <button
+      type="button"
+      class="lang-toggle"
+      [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
+      (click)="toggleLanguage()"
+    >
+      {{ languageService.currentLang() === 'en' ? 'ع' : 'EN' }}
     </button>
-    <button type="button" [class.active]="languageService.currentLang() === 'ar'" (click)="switchTo('ar')">
-      AR
-    </button>
+
+    @if (authService.isAuthenticated()) {
+      <button type="button" class="header-action-btn header-action-btn--logout" (click)="logout()">
+        {{ 'AUTH.LOGOUT' | translate }}
+      </button>
+    } @else {
+      <a class="header-action-btn" routerLink="/login">
+        {{ 'AUTH.LOGIN' | translate }}
+      </a>
+    }
   </div>
 </header>

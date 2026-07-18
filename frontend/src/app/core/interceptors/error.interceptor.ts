@@ -2,22 +2,27 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { AppLogService } from '../services/app-log.service';
 
-/**
- * Centralizes HTTP error handling so feature services/components don't each
- * need their own 401/error boilerplate.
- */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
+  const log = inject(AppLogService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      const ctx = {
+        url: req.url,
+        method: req.method,
+        status: error.status,
+      };
+
       if (error.status === 401) {
+        log.warn('Unauthorized request, redirecting to login', ctx);
         router.navigate(['/login']);
       } else if (error.status === 0) {
-        console.error('Network error — is the API reachable?', error);
+        log.error('Network error — API unreachable', ctx);
       } else {
-        console.error(`API error ${error.status} on ${req.method} ${req.url}`, error.error);
+        log.error(`API error ${error.status}`, { ...ctx, body: error.error });
       }
 
       return throwError(() => error);
