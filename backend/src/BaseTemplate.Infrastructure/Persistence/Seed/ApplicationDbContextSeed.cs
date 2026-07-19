@@ -19,10 +19,13 @@ public static class ApplicationDbContextSeed
         {
             await context.Database.MigrateAsync();
 
-            var branding = await context.BrandingSettings.FirstOrDefaultAsync();
-            if (branding is null)
+            // Seed the single settings row only if it doesn't exist yet. Once it
+            // exists, it's owned by whoever edits it via the settings page —
+            // never overwrite an admin's customization back to these defaults
+            // on a later startup.
+            if (!await context.BrandingSettings.AnyAsync())
             {
-                branding = BrandingSettings.CreateDefault(
+                var branding = BrandingSettings.CreateDefault(
                     appName: BrandingDefaults.AppName,
                     appNameAr: BrandingDefaults.AppNameAr,
                     logoUrl: BrandingDefaults.LogoUrl,
@@ -34,20 +37,6 @@ public static class ApplicationDbContextSeed
                 await context.SaveChangesAsync();
                 branding.ClearDomainEvents();
                 logger.LogInformation("Branding settings seeded with defaults");
-            }
-            else if (branding.AppName != BrandingDefaults.AppName || branding.AppNameAr != BrandingDefaults.AppNameAr)
-            {
-                branding.Update(
-                    BrandingDefaults.AppName,
-                    BrandingDefaults.AppNameAr,
-                    BrandingDefaults.LogoUrl,
-                    null,
-                    BrandingDefaults.PrimaryColor,
-                    BrandingDefaults.SecondaryColor);
-
-                await context.SaveChangesAsync();
-                branding.ClearDomainEvents();
-                logger.LogInformation("Branding settings reset to defaults (was '{OldName}')", branding.AppName);
             }
 
             var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
