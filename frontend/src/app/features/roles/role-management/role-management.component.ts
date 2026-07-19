@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RoleService } from '../../../core/services/role.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { RoleDto } from '../../../core/models/role.model';
 
 @Component({
@@ -17,6 +18,7 @@ export class RoleManagementComponent {
   private readonly roleService = inject(RoleService);
   private readonly toast = inject(ToastService);
   private readonly translate = inject(TranslateService);
+  private readonly confirmService = inject(ConfirmService);
 
   readonly roles = this.roleService.roles;
   readonly loading = signal(true);
@@ -55,7 +57,12 @@ export class RoleManagementComponent {
   }
 
   async deleteRole(role: RoleDto): Promise<void> {
-    const confirmed = confirm(this.translate.instant('ROLES.CONFIRM_DELETE', { name: role.name }));
+    const confirmed = await this.confirmService.confirm({
+      title: this.translate.instant('ROLES.DELETE'),
+      message: this.translate.instant('ROLES.CONFIRM_DELETE', { name: role.name }),
+      confirmText: this.translate.instant('ROLES.DELETE'),
+      danger: true,
+    });
     if (!confirmed) return;
 
     try {

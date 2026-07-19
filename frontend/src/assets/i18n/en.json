@@ -77,5 +77,13 @@
     "PROTECTED_BADGE": "Built-in",
     "CONFIRM_DELETE": "Delete role \"{{name}}\"? Users with this role will lose it.",
     "NO_ROLES": "No roles yet."
+  },
+  "CONFIRM": {
+    "CONFIRM": "Confirm",
+    "CANCEL": "Cancel"
+  },
+  "DATE_PICKER": {
+    "TODAY": "Today",
+    "CLEAR": "Clear"
   }
 }

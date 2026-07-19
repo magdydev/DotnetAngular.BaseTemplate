@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UserService } from '../../../core/services/user.service';
 import { RoleService } from '../../../core/services/role.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { AppUserDto } from '../../../core/models/user.model';
 
 @Component({
@@ -19,6 +20,7 @@ export class UserManagementComponent {
   private readonly roleService = inject(RoleService);
   private readonly toast = inject(ToastService);
   private readonly translate = inject(TranslateService);
+  private readonly confirmService = inject(ConfirmService);
 
   readonly users = this.userService.users;
   readonly roles = this.roleService.roles;
@@ -139,7 +141,12 @@ export class UserManagementComponent {
   }
 
   async deleteUser(user: AppUserDto): Promise<void> {
-    const confirmed = confirm(this.translate.instant('USERS.CONFIRM_DELETE', { username: user.username }));
+    const confirmed = await this.confirmService.confirm({
+      title: this.translate.instant('USERS.DELETE'),
+      message: this.translate.instant('USERS.CONFIRM_DELETE', { username: user.username }),
+      confirmText: this.translate.instant('USERS.DELETE'),
+      danger: true,
+    });
     if (!confirmed) return;
 
     try {

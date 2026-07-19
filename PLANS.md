@@ -9,6 +9,8 @@
 - **i18n**: English + Arabic with automatic RTL, translated toast messages
 - **Design system**: OKLCH tokens, responsive layout (640/768/1024 breakpoints), accessible, dark-mode-ready
 - **Toast notifications**: direction-aware (top-right LTR / top-left RTL), auto-dismiss, success/error/info
+- **Confirm dialog**: `ConfirmService.confirm(...)` returns a `Promise<boolean>` — same call shape as the native `confirm()` it replaces, but renders as a translated, themeable modal (`ConfirmDialogComponent`). Wired into both delete flows (users, roles); reuse it for any other destructive action
+- **Date picker**: `DatePickerComponent`, a custom calendar (not the native `<input type="date">`) implementing `ControlValueAccessor` — drop it into any form via `[(ngModel)]`/reactive forms. Model value is an ISO `yyyy-MM-dd` string; month/weekday labels come from `Intl.DateTimeFormat` so EN/AR both work with no translation-map maintenance; `minDate`/`maxDate` inputs disable out-of-range days
 - **Shell**: header (brand + lang toggle + logout), collapsible sidebar, footer ("© MagdyTech Solutions" + logo), global spinner
 
 ## Architecture decisions
@@ -27,11 +29,12 @@
 | `providedIn: 'root'` for all services | Tree-shakeable, no manual module registration |
 | Users/Roles controllers call `UserManager`/`RoleManager` directly, skipping Application/CQRS | `AppUser` lives in Infrastructure; an Application-layer command referencing it would invert the dependency direction. Same choice `AuthController` already made — Identity is already a persistence abstraction, wrapping it again would just be ceremony |
 | `FrameworkReference` to `Microsoft.AspNetCore.App` in Infrastructure | The Identity NuGet package (`Microsoft.Extensions.Identity.Core`) is missing `AddDefaultTokenProviders()` and the concrete token providers — they need the full ASP.NET Core shared framework, which a plain class library doesn't get automatically |
+| Confirm dialog backdrop is a `<button>`, not a `div` with `(click)` | Native buttons are keyboard-operable and focusable for free; a clickable `div` fails `@angular-eslint/template` a11y rules (`click-events-have-key-events`, `interactive-supports-focus`) and would need manual keydown handling to match |
+| Date picker models value as ISO `yyyy-MM-dd` string, not `Date` | JSON-serializable straight to/from an API without a conversion step at the form boundary; also matches what `<input type="date">` would have given a consuming component, so it's a drop-in replacement |
 
 ## Potential future work
 
 - **Dark mode** — add `.dark` class toggle with persisted preference
-- **Confirmation dialogs** — reusable modal for destructive actions (delete, logout)
 - **Form validation UX** — inline field-level error messages with Angular Validators
 - **Audit log** — track who changed branding settings and when
 - **Performance budgets** — refine Angular budgets as feature count grows

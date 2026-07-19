@@ -8,13 +8,22 @@ import { AppLogService } from './core/services/app-log.service';
 import { AppFooterComponent } from './shared/components/app-footer/app-footer.component';
 import { AppHeaderComponent } from './shared/components/app-header/app-header.component';
 import { AppSidebarComponent } from './shared/components/app-sidebar/app-sidebar.component';
+import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
 import { GlobalSpinnerComponent } from './shared/components/global-spinner/global-spinner.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, AppHeaderComponent, AppFooterComponent, AppSidebarComponent, GlobalSpinnerComponent, ToastComponent],
+  imports: [
+    RouterOutlet,
+    AppHeaderComponent,
+    AppFooterComponent,
+    AppSidebarComponent,
+    GlobalSpinnerComponent,
+    ToastComponent,
+    ConfirmDialogComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

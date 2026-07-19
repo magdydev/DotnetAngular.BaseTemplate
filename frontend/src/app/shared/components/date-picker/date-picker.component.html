@@ -1,0 +1,75 @@
+<div class="date-picker">
+  <button
+    type="button"
+    class="date-picker__control"
+    [disabled]="disabled()"
+    [attr.aria-expanded]="open()"
+    aria-haspopup="dialog"
+    (click)="toggleOpen()"
+  >
+    <span class="date-picker__value" [class.date-picker__value--placeholder]="!displayValue()">
+      {{ displayValue() || placeholder() }}
+    </span>
+    <svg
+      class="date-picker__icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <path d="M16 2v4M8 2v4M3 10h18" />
+    </svg>
+  </button>
+
+  @if (open()) {
+    <div class="date-picker__popup" role="dialog" aria-label="Choose a date">
+      <div class="date-picker__header">
+        <button type="button" class="date-picker__nav" aria-label="Previous month" (click)="prevMonth()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <span class="date-picker__month">{{ monthLabel() }}</span>
+        <button type="button" class="date-picker__nav" aria-label="Next month" (click)="nextMonth()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="date-picker__weekdays">
+        @for (label of weekdayLabels(); track $index) {
+          <span>{{ label }}</span>
+        }
+      </div>
+
+      <div class="date-picker__grid">
+        @for (cell of calendarCells(); track cell.iso) {
+          <button
+            type="button"
+            class="date-picker__day"
+            [class.date-picker__day--muted]="!cell.inCurrentMonth"
+            [class.date-picker__day--selected]="cell.selected"
+            [class.date-picker__day--today]="cell.isToday"
+            [disabled]="cell.disabled"
+            (click)="selectDay(cell)"
+          >
+            {{ cell.day }}
+          </button>
+        }
+      </div>
+
+      <div class="date-picker__footer">
+        <button type="button" class="date-picker__link" (click)="selectToday()">
+          {{ 'DATE_PICKER.TODAY' | translate }}
+        </button>
+        <button type="button" class="date-picker__link" (click)="clear()">
+          {{ 'DATE_PICKER.CLEAR' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

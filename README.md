@@ -159,14 +159,16 @@ src/app/
 │   ├── auth/              # auth.service.ts (login/logout/token/roles), auth.guard.ts (authGuard, adminGuard)
 │   ├── interceptors/      # auth (attaches JWT), loading (global spinner), error (logging)
 │   ├── models/            # BrandingSettings, AppUserDto, RoleDto
-│   └── services/          # branding, language (i18n + RTL), loading, health, toast, app-log, user, role
+│   └── services/          # branding, language (i18n + RTL), loading, health, toast, confirm, app-log, user, role
 ├── shared/
 │   └── components/
 │       ├── app-header/    # logo + brand name + language switcher + logout
 │       ├── app-sidebar/   # nav links (settings, users/roles — admin-only)
 │       ├── app-footer/    # "© MagdyTech Solutions" + logo
 │       ├── global-spinner/ # full-screen loading overlay
-│       └── toast/         # notification toasts (success/error/info)
+│       ├── toast/         # notification toasts (success/error/info)
+│       ├── confirm-dialog/ # ConfirmService-driven modal — replaces native confirm() for destructive actions
+│       └── date-picker/   # custom calendar, ControlValueAccessor, ISO date string value — drop into any form
 ├── features/
 │   ├── auth/login/        # standalone login page (no shell layout)
 │   ├── settings/          # branding settings (name, logo, colors) — lazy-loaded, auth-guarded
@@ -179,6 +181,23 @@ src/app/
 Add a new feature by creating `src/app/features/<feature>/` with its own `*.routes.ts` (lazy-loaded via `loadChildren`/`loadComponent`) and registering it in `app.routes.ts`.
 
 The API base URL is set per environment in `src/environments/environment.ts` (dev) and `environment.production.ts` (prod).
+
+### Confirm dialog and date picker
+
+```ts
+const ok = await this.confirmService.confirm({
+  title: 'Delete item',
+  message: `Delete "${item.name}"? This cannot be undone.`,
+  danger: true, // red confirm button
+});
+if (!ok) return;
+```
+
+```html
+<app-date-picker [(ngModel)]="dueDate" placeholder="Due date" minDate="2024-01-01" />
+```
+
+`ConfirmService.confirm(...)` is a drop-in `Promise<boolean>` replacement for the browser's native `confirm()` — same call shape, but renders as a themeable, translated modal instead of an unstyled OS dialog. `DatePickerComponent` is a `ControlValueAccessor`, so it plugs into `[(ngModel)]` or a reactive `FormControl` like any built-in input; its value is an ISO `yyyy-MM-dd` string (or `null`).
 
 ### Design system
 
