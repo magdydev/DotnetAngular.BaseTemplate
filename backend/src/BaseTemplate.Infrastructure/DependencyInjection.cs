@@ -33,7 +33,8 @@ public static class DependencyInjection
             options.User.RequireUniqueEmail = false;
         })
         .AddRoles<IdentityRole<Guid>>()
-        .AddEntityFrameworkStores<ApplicationDbContext>();
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddScoped<IBrandingSettingsRepository, BrandingSettingsRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();

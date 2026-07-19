@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--
+      Identity's own NuGet package (Microsoft.Extensions.Identity.Core) is a
+      decoupled subset that's missing IdentityBuilder.AddDefaultTokenProviders()
+      and the concrete token providers it wires up (they need the Data
+      Protection stack). This project isn't Sdk.Web, so it doesn't get the
+      full ASP.NET Core shared framework automatically — this FrameworkReference
+      is the standard fix for a class library that needs full Identity.
+    -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">

@@ -108,7 +108,17 @@ An admin user is seeded on first startup:
 - **Username:** `admin`
 - **Password:** `Admin@123`
 
-Add `[Authorize]` to any controller/action to require authentication. The JWT includes `ClaimTypes.Role` claims for role-based authorization.
+Add `[Authorize]` to any controller/action to require authentication. The JWT includes `ClaimTypes.Role` claims for role-based authorization — e.g. `[Authorize(Roles = "Admin")]`.
+
+### User & role management
+
+Roles are data, not a hardcoded enum: create one via `POST /api/v1/roles` and it's immediately assignable to users, no code change or redeploy. Both controllers are `[Authorize(Roles = "Admin")]` and live directly in the API layer (see `UsersController`/`RolesController`) rather than going through Application/CQRS — `AppUser` is an Infrastructure type, so an Application-layer command referencing it would invert the dependency direction; this mirrors the choice `AuthController` already made.
+
+- `GET/POST /api/v1/users`, `PUT /api/v1/users/{id}` (email + roles), `PUT /api/v1/users/{id}/password`, `DELETE /api/v1/users/{id}`
+- `GET/POST /api/v1/roles`, `DELETE /api/v1/roles/{id}` — the seeded `Admin` role can't be deleted
+- Server-side guards: an admin can't delete their own account or remove their own `Admin` role (both return 400, not a stack trace)
+
+On the frontend, `/users` and `/roles` are lazy-loaded routes behind `adminGuard` (`core/auth/auth.guard.ts`) — client-side only, for UX; the real enforcement is the `[Authorize(Roles = "Admin")]` above. `AuthService` decodes the roles returned by `POST /api/v1/auth/login` into an `isAdmin` signal that also hides the sidebar links for non-admins.
 
 ### Adding a new feature
 
@@ -146,20 +156,22 @@ npm start        # ng serve, http://localhost:4200
 ```
 src/app/
 ├── core/
-│   ├── auth/              # auth.service.ts (login/logout/token), auth.guard.ts (CanActivate)
+│   ├── auth/              # auth.service.ts (login/logout/token/roles), auth.guard.ts (authGuard, adminGuard)
 │   ├── interceptors/      # auth (attaches JWT), loading (global spinner), error (logging)
-│   ├── models/            # BrandingSettings interface + logoSource() helper
-│   └── services/          # branding, language (i18n + RTL), loading, health, toast, app-log
+│   ├── models/            # BrandingSettings, AppUserDto, RoleDto
+│   └── services/          # branding, language (i18n + RTL), loading, health, toast, app-log, user, role
 ├── shared/
 │   └── components/
 │       ├── app-header/    # logo + brand name + language switcher + logout
-│       ├── app-sidebar/   # nav links (settings)
+│       ├── app-sidebar/   # nav links (settings, users/roles — admin-only)
 │       ├── app-footer/    # "© MagdyTech Solutions" + logo
 │       ├── global-spinner/ # full-screen loading overlay
 │       └── toast/         # notification toasts (success/error/info)
 ├── features/
 │   ├── auth/login/        # standalone login page (no shell layout)
-│   └── settings/          # branding settings (name, logo, colors) — lazy-loaded, auth-guarded
+│   ├── settings/          # branding settings (name, logo, colors) — lazy-loaded, auth-guarded
+│   ├── users/              # user management (list/create/edit/reset password/delete) — lazy-loaded, admin-guarded
+│   └── roles/              # role management (list/create/delete) — lazy-loaded, admin-guarded
 ├── app.config.ts          # providers: HTTP, router, i18n, interceptors, APP_INITIALIZER
 └── app.routes.ts          # top-level route table
 ```

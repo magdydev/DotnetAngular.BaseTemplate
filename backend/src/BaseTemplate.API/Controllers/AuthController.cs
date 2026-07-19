@@ -21,7 +21,7 @@ public sealed class AuthController(
 {
     public sealed record LoginRequest(string Username, string Password);
 
-    public sealed record LoginResponse(string Token, DateTime ExpiresAt, string AppName);
+    public sealed record LoginResponse(string Token, DateTime ExpiresAt, string AppName, IReadOnlyList<string> Roles);
 
     [HttpPost("login")]
     [AllowAnonymous]
@@ -73,6 +73,7 @@ public sealed class AuthController(
         return Ok(new LoginResponse(
             new JwtSecurityTokenHandler().WriteToken(token),
             expiresAt,
-            "BaseTemplate"));
+            "BaseTemplate",
+            roles.ToList()));
     }
 }

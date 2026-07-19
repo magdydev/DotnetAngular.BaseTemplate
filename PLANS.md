@@ -4,6 +4,8 @@
 
 - **Auth**: ASP.NET Core Identity with JWT, login page, auth guard (lazy-loaded)
 - **Branding**: dynamic app name/logo/colors, stored in DB, editable via settings page (lazy-loaded, auth-guarded)
+- **User management**: list/create/edit (email + roles)/reset password/delete via `UsersController`, admin-only; self-delete and self-demote-from-Admin are blocked server-side
+- **Role management**: role CRUD via `RolesController` — roles are DB rows, not a hardcoded enum, so a new role is immediately assignable to users with no code change or redeploy. The seeded `Admin` role can't be deleted
 - **i18n**: English + Arabic with automatic RTL, translated toast messages
 - **Design system**: OKLCH tokens, responsive layout (640/768/1024 breakpoints), accessible, dark-mode-ready
 - **Toast notifications**: direction-aware (top-right LTR / top-left RTL), auto-dismiss, success/error/info
@@ -23,11 +25,11 @@
 | Emulated ViewEncapsulation | Default, scopes styles without shadow DOM overhead |
 | `APP_INITIALIZER` for branding | Blocks nothing; API failure falls back gracefully without breaking startup |
 | `providedIn: 'root'` for all services | Tree-shakeable, no manual module registration |
+| Users/Roles controllers call `UserManager`/`RoleManager` directly, skipping Application/CQRS | `AppUser` lives in Infrastructure; an Application-layer command referencing it would invert the dependency direction. Same choice `AuthController` already made — Identity is already a persistence abstraction, wrapping it again would just be ceremony |
+| `FrameworkReference` to `Microsoft.AspNetCore.App` in Infrastructure | The Identity NuGet package (`Microsoft.Extensions.Identity.Core`) is missing `AddDefaultTokenProviders()` and the concrete token providers — they need the full ASP.NET Core shared framework, which a plain class library doesn't get automatically |
 
 ## Potential future work
 
-- **User management page** — list/create/edit/delete users via Identity
-- **Role management** — role CRUD since Admin role is already seeded
 - **Dark mode** — add `.dark` class toggle with persisted preference
 - **Confirmation dialogs** — reusable modal for destructive actions (delete, logout)
 - **Form validation UX** — inline field-level error messages with Angular Validators

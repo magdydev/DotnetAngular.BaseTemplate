@@ -1,0 +1,186 @@
+<div class="page">
+  <h1 class="page__title">{{ 'USERS.TITLE' | translate }}</h1>
+
+  <form class="card" (ngSubmit)="createUser()" #userForm="ngForm">
+    <div class="add-grid">
+      <label class="field">
+        <span class="field__label">{{ 'USERS.USERNAME' | translate }}</span>
+        <input
+          type="text"
+          class="field__input"
+          [ngModel]="newUsername()"
+          (ngModelChange)="newUsername.set($event)"
+          name="username"
+          autocomplete="off"
+          required
+        />
+      </label>
+
+      <label class="field">
+        <span class="field__label">{{ 'USERS.EMAIL' | translate }}</span>
+        <input
+          type="email"
+          class="field__input"
+          [ngModel]="newEmail()"
+          (ngModelChange)="newEmail.set($event)"
+          name="email"
+          autocomplete="off"
+        />
+      </label>
+
+      <label class="field">
+        <span class="field__label">{{ 'USERS.PASSWORD' | translate }}</span>
+        <input
+          type="password"
+          class="field__input"
+          [ngModel]="newPassword()"
+          (ngModelChange)="newPassword.set($event)"
+          name="password"
+          autocomplete="new-password"
+          required
+        />
+      </label>
+    </div>
+
+    <div class="role-picker">
+      <span class="field__label">{{ 'USERS.ROLES' | translate }}</span>
+      <div class="role-chips">
+        @for (role of roles(); track role.id) {
+          <label class="role-chip" [class.role-chip--checked]="newRoles().includes(role.name)">
+            <input
+              type="checkbox"
+              [checked]="newRoles().includes(role.name)"
+              (change)="toggleNewRole(role.name)"
+            />
+            {{ role.name }}
+          </label>
+        }
+      </div>
+    </div>
+
+    <div class="add-submit-row">
+      <button type="submit" class="btn btn--primary" [disabled]="creating() || !newUsername().trim() || !newPassword()">
+        {{ 'USERS.ADD' | translate }}
+      </button>
+    </div>
+  </form>
+
+  <div class="card">
+    @if (loading()) {
+      <p class="empty-state">…</p>
+    } @else if (users().length === 0) {
+      <p class="empty-state">{{ 'USERS.NO_USERS' | translate }}</p>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'USERS.USERNAME' | translate }}</th>
+            <th>{{ 'USERS.EMAIL' | translate }}</th>
+            <th>{{ 'USERS.ROLES' | translate }}</th>
+            <th>{{ 'USERS.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            @if (editingId() === user.id) {
+              <tr class="row--editing">
+                <td>{{ user.username }}</td>
+                <td>
+                  <input
+                    type="email"
+                    class="field__input field__input--sm"
+                    [ngModel]="editEmail()"
+                    (ngModelChange)="editEmail.set($event)"
+                    name="editEmail-{{ user.id }}"
+                  />
+                </td>
+                <td>
+                  <div class="role-chips">
+                    @for (role of roles(); track role.id) {
+                      <label class="role-chip" [class.role-chip--checked]="editRoles().includes(role.name)">
+                        <input
+                          type="checkbox"
+                          [checked]="editRoles().includes(role.name)"
+                          (change)="toggleEditRole(role.name)"
+                        />
+                        {{ role.name }}
+                      </label>
+                    }
+                  </div>
+                </td>
+                <td class="actions">
+                  <button type="button" class="btn btn--primary btn--sm" [disabled]="savingEdit()" (click)="saveEdit(user.id)">
+                    {{ 'USERS.SAVE' | translate }}
+                  </button>
+                  <button type="button" class="btn btn--ghost btn--sm" (click)="cancelEdit()">
+                    {{ 'USERS.CANCEL' | translate }}
+                  </button>
+                </td>
+              </tr>
+            } @else if (resettingId() === user.id) {
+              <tr class="row--editing">
+                <td>{{ user.username }}</td>
+                <td colspan="2">
+                  <input
+                    type="password"
+                    class="field__input field__input--sm"
+                    [ngModel]="resetPasswordValue()"
+                    (ngModelChange)="resetPasswordValue.set($event)"
+                    name="resetPassword-{{ user.id }}"
+                    autocomplete="new-password"
+                    [placeholder]="'USERS.NEW_PASSWORD' | translate"
+                  />
+                </td>
+                <td class="actions">
+                  <button
+                    type="button"
+                    class="btn btn--primary btn--sm"
+                    [disabled]="savingReset() || !resetPasswordValue()"
+                    (click)="confirmResetPassword(user.id)"
+                  >
+                    {{ 'USERS.SAVE' | translate }}
+                  </button>
+                  <button type="button" class="btn btn--ghost btn--sm" (click)="cancelResetPassword()">
+                    {{ 'USERS.CANCEL' | translate }}
+                  </button>
+                </td>
+              </tr>
+            } @else {
+              <tr>
+                <td>
+                  {{ user.username }}
+                  @if (user.lockedOut) {
+                    <span class="badge badge--warning">{{ 'USERS.LOCKED' | translate }}</span>
+                  }
+                </td>
+                <td>{{ user.email || '—' }}</td>
+                <td>
+                  @if (user.roles.length > 0) {
+                    <div class="role-chips">
+                      @for (role of user.roles; track role) {
+                        <span class="role-chip role-chip--readonly">{{ role }}</span>
+                      }
+                    </div>
+                  } @else {
+                    <span class="empty-cell">—</span>
+                  }
+                </td>
+                <td class="actions">
+                  <button type="button" class="btn btn--ghost btn--sm" (click)="startEdit(user)">
+                    {{ 'USERS.EDIT' | translate }}
+                  </button>
+                  <button type="button" class="btn btn--ghost btn--sm" (click)="startResetPassword(user.id)">
+                    {{ 'USERS.RESET_PASSWORD' | translate }}
+                  </button>
+                  <button type="button" class="btn btn--danger btn--sm" (click)="deleteUser(user)">
+                    {{ 'USERS.DELETE' | translate }}
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

@@ -1,7 +1,9 @@
 {
   "NAV": {
     "SECTION": "Navigation",
-    "SETTINGS": "Settings"
+    "SETTINGS": "Settings",
+    "USERS": "Users",
+    "ROLES": "Roles"
   },
   "LANGUAGE": {
     "SWITCH": "Language",
@@ -24,7 +26,14 @@
     "SIGNED_OUT": "You have been signed out.",
     "INVALID_CREDENTIALS": "Invalid username or password.",
     "SETTINGS_SAVED": "Settings saved successfully.",
-    "SETTINGS_SAVE_ERROR": "Failed to save settings."
+    "SETTINGS_SAVE_ERROR": "Failed to save settings.",
+    "ACTION_ERROR": "Something went wrong. Please try again.",
+    "USER_CREATED": "User created successfully.",
+    "USER_UPDATED": "User updated successfully.",
+    "USER_DELETED": "User deleted successfully.",
+    "PASSWORD_RESET": "Password reset successfully.",
+    "ROLE_CREATED": "Role created successfully.",
+    "ROLE_DELETED": "Role deleted successfully."
   },
   "SETTINGS": {
     "TITLE": "Settings",
@@ -39,5 +48,34 @@
     "PRIMARY_COLOR": "Primary Color",
     "SECONDARY_COLOR": "Secondary Color",
     "SAVE": "Save Changes"
+  },
+  "USERS": {
+    "TITLE": "Users",
+    "ADD": "Add User",
+    "USERNAME": "Username",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "ROLES": "Roles",
+    "LOCKED": "Locked",
+    "ACTIONS": "Actions",
+    "EDIT": "Edit",
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "RESET_PASSWORD": "Reset password",
+    "NEW_PASSWORD": "New password",
+    "CONFIRM_DELETE": "Delete user \"{{username}}\"? This cannot be undone.",
+    "NO_USERS": "No users yet."
+  },
+  "ROLES": {
+    "TITLE": "Roles",
+    "ADD": "Add Role",
+    "NAME": "Role name",
+    "USER_COUNT": "Users",
+    "ACTIONS": "Actions",
+    "DELETE": "Delete",
+    "PROTECTED_BADGE": "Built-in",
+    "CONFIRM_DELETE": "Delete role \"{{name}}\"? Users with this role will lose it.",
+    "NO_ROLES": "No roles yet."
   }
 }

@@ -1,0 +1,62 @@
+<div class="page">
+  <h1 class="page__title">{{ 'ROLES.TITLE' | translate }}</h1>
+
+  <form class="card add-card" (ngSubmit)="createRole()" #roleForm="ngForm">
+    <label class="field">
+      <span class="field__label">{{ 'ROLES.NAME' | translate }}</span>
+      <input
+        type="text"
+        class="field__input"
+        [ngModel]="newRoleName()"
+        (ngModelChange)="newRoleName.set($event)"
+        name="roleName"
+        required
+        placeholder="Editor"
+      />
+    </label>
+    <button type="submit" class="btn btn--primary" [disabled]="creating() || !newRoleName().trim()">
+      {{ 'ROLES.ADD' | translate }}
+    </button>
+  </form>
+
+  <div class="card">
+    @if (loading()) {
+      <p class="empty-state">…</p>
+    } @else if (roles().length === 0) {
+      <p class="empty-state">{{ 'ROLES.NO_ROLES' | translate }}</p>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'ROLES.NAME' | translate }}</th>
+            <th>{{ 'ROLES.USER_COUNT' | translate }}</th>
+            <th>{{ 'ROLES.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (role of roles(); track role.id) {
+            <tr>
+              <td>
+                <span class="role-name">{{ role.name }}</span>
+                @if (role.protected) {
+                  <span class="badge badge--protected">{{ 'ROLES.PROTECTED_BADGE' | translate }}</span>
+                }
+              </td>
+              <td>{{ role.userCount }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn--danger btn--sm"
+                  [disabled]="role.protected"
+                  (click)="deleteRole(role)"
+                >
+                  {{ 'ROLES.DELETE' | translate }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

@@ -14,5 +14,36 @@
       </svg>
       <span>{{ 'NAV.SETTINGS' | translate }}</span>
     </a>
+
+    @if (authService.isAdmin()) {
+      <a
+        class="sidebar-link"
+        routerLink="/users"
+        routerLinkActive="sidebar-link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page"
+      >
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="8.5" cy="7" r="4" />
+          <path d="M20 8v6M23 11h-6" />
+        </svg>
+        <span>{{ 'NAV.USERS' | translate }}</span>
+      </a>
+
+      <a
+        class="sidebar-link"
+        routerLink="/roles"
+        routerLinkActive="sidebar-link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page"
+      >
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" />
+          <circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none" />
+        </svg>
+        <span>{{ 'NAV.ROLES' | translate }}</span>
+      </a>
+    }
   </nav>
 </aside>
